@@ -1,0 +1,17 @@
+.movieInfo-card {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: 100%;
+}
+.movieInfo-card img {
+	width: 20rem;
+	max-height: 500px;
+}
+
+.description {
+	width: 50%;
+	color: white;
+	text-align: left;
+	padding: 20px;
+}
