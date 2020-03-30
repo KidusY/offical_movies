@@ -1,0 +1,29 @@
+.card {
+	border: none;
+	outline: none;
+	width: 13rem;
+	background: transparent;
+	transition: ease-in-out 0.25s;
+	cursor: pointer;
+	margin: 0 auto;
+	box-shadow: 6px 6px 6px #1111119f;
+}
+
+.card-body {
+	color: white;
+	margin: 0 auto;
+}
+.card img {
+	border-radius: 10px;
+	margin: 0 auto;
+}
+.card:hover {
+	transform: scale(1.1);
+	transition: ease-in-out 0.25s;
+}
+
+@media (max-width: 720px) {
+	.card {
+		width: 20rem;
+	}
+}

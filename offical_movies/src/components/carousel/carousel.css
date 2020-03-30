@@ -1,0 +1,9 @@
+.item img {
+	width: 250px !important;
+	margin: 0 auto;
+	transition: ease-in-out 0.25s;
+	cursor: pointer;
+}
+.item:hover {
+	transform: scale(1.1);
+}
