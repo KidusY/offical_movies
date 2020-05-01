@@ -4,3 +4,16 @@
 	padding: 15px;
 	box-shadow: 5px 5px 5px #222222a9;
 }
+.nav button {
+	background: rgb(26, 26, 26);
+	border: none;
+	color: white;
+	margin: 0 5px;
+}
+.dropdown-menu {
+	background-color: rgb(39, 39, 39);
+	color: white;
+}
+.dropdown-menu a {
+	color: white;
+}

@@ -4,21 +4,20 @@ import './Navbar.css';
 const Nav = (props) => (
 	<ul className='nav nav-tabs'>
 		<li className='nav-item'>
-			<button className='nav-link active' onClick={() => props.discover()}>
+			<button className='nav-link ' onClick={() => props.discover()}>
 				Discover
 			</button>
 		</li>
 		<li className='nav-item dropdown'>
-			<a
+			<button
 				className='nav-link dropdown-toggle'
 				data-toggle='dropdown'
 				href='/some/valid/uri'
-				role='button'
 				aria-haspopup='true'
 				aria-expanded='false'
 			>
-				Dropdown
-			</a>
+				Tv shows
+			</button>
 			<div className='dropdown-menu'>
 				<a className='dropdown-item' href='/some/valid/uri'>
 					Action
@@ -29,7 +28,7 @@ const Nav = (props) => (
 				<a className='dropdown-item' href='/some/valid/uri'>
 					Something else here
 				</a>
-				<div className='dropdown-divider' />
+
 				<a className='dropdown-item' href='/some/valid/uri'>
 					Separated link
 				</a>

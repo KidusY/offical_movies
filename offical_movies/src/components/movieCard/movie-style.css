@@ -7,6 +7,7 @@
 	cursor: pointer;
 	margin: 0 auto;
 	box-shadow: 6px 6px 6px #1111119f;
+	transition: ease-in-out 0.5s;
 }
 
 .card-body {
@@ -19,7 +20,7 @@
 }
 .card:hover {
 	transform: scale(1.1);
-	transition: ease-in-out 0.25s;
+	transition: ease-in-out 0.5s;
 }
 
 @media (max-width: 720px) {

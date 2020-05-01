@@ -1,0 +1,37 @@
+.movieTrailers {
+	text-align: left;
+	width: 100%;
+}
+.movieTrailerItems {
+	display: flex;
+	flex-wrap: wrap;
+	margin-top: 100px;
+	justify-content: space-evenly;
+	width: 100%;
+}
+.movieTrailerItems h6 {
+	width: 27%;
+}
+.movieTrailerItems iframe {
+	width: 100%;
+}
+.Trailercontainer {
+	display: flex;
+	width: 100%;
+}
+.movieTrailerItems h6 {
+	padding: 20px;
+}
+iframe:hover {
+	transform: scale(1.1);
+}
+
+@media (min-width: 1024px) {
+	.movieTrailerItems iframe {
+		width: 150%;
+	}
+	.movieTrailerItems {
+		justify-content: space-between;
+		width: 70%;
+	}
+}

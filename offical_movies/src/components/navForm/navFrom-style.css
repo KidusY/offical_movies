@@ -1,1 +1,24 @@
+.navFromContainer .form-control {
+	width: 350px;
+}
+.dropdownInput {
+	width: 100%;
+	min-width: 200px;
+	max-width: 350px;
+	height: 100vh;
+	padding: 20px;
 
+	background-color: rgb(32, 32, 32);
+	position: absolute;
+	z-index: 2000;
+	overflow-y: scroll;
+}
+.dropdownInput img {
+	width: 100px;
+	height: 100px;
+}
+.searchedList div {
+	display: flex;
+	padding: 5px;
+	color: white;
+}

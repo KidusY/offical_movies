@@ -14,4 +14,13 @@ body {
 	max-width: 400px;
 	min-width: 300px;
 	margin: 0 auto;
+	background-repeat: no-repeat;
+}
+.closeBtn {
+	height: 30px;
+	line-height: 10px;
+	font-weight: bold;
+}
+.mainContainer {
+	justify-content: center;
 }
