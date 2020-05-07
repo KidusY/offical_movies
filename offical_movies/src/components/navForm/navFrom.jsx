@@ -4,22 +4,32 @@ import placeHolder from '../../assets/placeholder_for_moviePosters.png';
 import './navFrom-style.css';
 
 const NavForm = (props) => {
-	let searchedList = props.searchedMovies.map((movies) => (
-		<div
-			className='searchedList'
-			onClick={() => {
-				props.searchMovieById(movies.id);
-				props.setVisibility('displaySearchedMovies');
-			}}
-		>
-			<Link to='/movieInfo' style={{ textDecoration: 'none' }}>
-				<div>
-					<img src={`https://image.tmdb.org/t/p/w500/${movies.poster_path}`} alt='' width='10%' />
-					<h5>{movies.original_title}</h5>
-				</div>
-			</Link>
-		</div>
-	));
+	let poster = placeHolder;
+
+	let searchedList = props.searchedMovies.map((movies, i) => {
+		if (movies.poster_path) {
+			poster = `https://image.tmdb.org/t/p/w500/${movies.poster_path}`;
+		}
+
+		return (
+			<div
+				className='searchedList'
+				key={i}
+				onClick={() => {
+					props.searchMovieById(movies.id);
+					props.searchSimilarMoviesById(movies.id);
+					props.setVisibility('displaySearchedMovies');
+				}}
+			>
+				<Link to='/movieInfo' style={{ textDecoration: 'none' }}>
+					<div>
+						<img src={poster} alt='' width='10%' />
+						<h5>{movies.original_title}</h5>
+					</div>
+				</Link>
+			</div>
+		);
+	});
 
 	return (
 		<form className='form-inline'>

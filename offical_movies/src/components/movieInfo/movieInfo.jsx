@@ -4,6 +4,7 @@ import MovieContext from '../../movieContext';
 import Carousel from '../carousel/carousel';
 import left from '../../assets/left.png';
 import right from '../../assets/right.png';
+import placeHolder from '../../assets/placeholder_for_moviePosters.png';
 import profileImg from '../../assets/placeholder-profile-male-500x500.png';
 
 import Slider from 'react-slick';
@@ -12,7 +13,8 @@ class MovieInfo extends React.Component {
 	stateContainer = {
 		similarMovies : [],
 		movieCast     : [],
-		style         : []
+		style         : [],
+		review        : []
 	};
 	getMoviesInfo = (
 		similarMovies,
@@ -20,7 +22,8 @@ class MovieInfo extends React.Component {
 		searchMovieById,
 		searchSimilarMoviesById,
 		searchMovieVideo,
-		movieInfo
+		movieInfo,
+		review
 	) => {
 		this.stateContainer.similarMovies = similarMovies.map((movie, i) => (
 			<Carousel
@@ -46,20 +49,31 @@ class MovieInfo extends React.Component {
 			);
 		});
 		this.stateContainer.style = {
-			background          : `linear-gradient(rgba(74, 74, 74, 0.8), rgba(74, 74, 74, 0.8))
+			background       : `linear-gradient(rgba(74, 74, 74, 0.8), rgba(74, 74, 74, 0.8))
 		,url(https://image.tmdb.org/t/p/w500/${movieInfo.backdrop_path})`,
-			'background-size'   : 'cover',
-			'background-repeat' : 'no-repeat',
-			padding             : '50px'
+			backgroundSize   : 'cover',
+			backgroundRepeat : 'no-repeat',
+			padding          : '50px'
 		};
+		if (review.length !== 0) {
+			this.stateContainer.review = review.map((reviewer, i) => (
+				<div className='review container' key={i}>
+					<h5> {reviewer.author} </h5>
+					<p>{reviewer.content}</p>
+				</div>
+			));
+		}
+		else {
+			this.stateContainer.review = 'No Reviews';
+		}
 	};
 
 	render () {
 		const options = {
 			dots           : true,
 			infinite       : true,
-			speed: 1500,
-			pauseOnHover:true,
+			speed          : 1500,
+			pauseOnHover   : true,
 			autoplay       : true,
 			slidesToShow   : 6,
 			slidesToScroll : 1,
@@ -101,15 +115,21 @@ class MovieInfo extends React.Component {
 							context.searchMovieById,
 							context.searchSimilarMoviesById,
 							context.searchMovieVideo,
-							context.MovieInfo
+							context.MovieInfo,
+							context.reviews
 						)}
-						{console.log('MovieInfo', context)}
 
-						<div className='movieInfo-card' style={this.style}>
-							<img
-								src={`https://image.tmdb.org/t/p/w500/${context.MovieInfo.poster_path}`}
-								alt={context.MovieInfo.original_title}
-							/>
+						<div className='movieInfo-card' style={this.stateContainer.style}>
+							{
+								!context.MovieInfo.poster_path ? <img
+									src={placeHolder}
+									alt={context.MovieInfo.original_title}
+								/> :
+								<img
+									src={`https://image.tmdb.org/t/p/w500/${context.MovieInfo.poster_path}`}
+									alt={context.MovieInfo.original_title}
+								/>}
+
 							<div className='description'>
 								<h1>{context.MovieInfo.original_title}</h1>{' '}
 								<span>
@@ -148,23 +168,34 @@ class MovieInfo extends React.Component {
 							</button>
 						</div>
 
-						{context.similarMovies.length !== 0 && (
+						{context.similarMovies.length && (
 							<div>
 								<h2 className='text-white'>Similar Movies</h2>
-								<div className="sliderContainer"> 
-									
-								<div className="left" onClick={() => this.slider.slickPrev()}> <img src={left} alt="Prev"  /> </div>
-								<Slider ref={c => (this.slider = c)} {...options}>{this.stateContainer.similarMovies}</Slider>
-								<div className="right"onClick={() => this.slider.slickNext()}> <img src={right} alt="next" /> </div>
-							</div>
+								<div className='sliderContainer'>
+									<div className='left' onClick={() => this.slider.slickPrev()}>
+										{' '}
+										<img src={left} alt='Prev' />{' '}
+									</div>
+									<Slider ref={(c) => (this.slider = c)} {...options}>
+										{this.stateContainer.similarMovies}
+									</Slider>
+									<div className='right' onClick={() => this.slider.slickNext()}>
+										{' '}
+										<img src={right} alt='next' />{' '}
+									</div>
+								</div>
 							</div>
 						)}
 						{context.movieCast.length && (
 							<div className='movieCast'>
-								<h2 className='text-white'>Top cast</h2>
+								<h2 className='text-white mt-3'>Top cast</h2>
 								<div className='row container'>{this.stateContainer.movieCast}</div>
 							</div>
 						)}
+						<div className='reviewContainer container'>
+							<h2>Reviews</h2>
+							{this.stateContainer.review}
+						</div>
 					</div>
 				)}
 			</MovieContext.Consumer>

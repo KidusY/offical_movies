@@ -5,7 +5,7 @@ import './movieTrailers-style.css';
 
 const MovieTrailers = (props) => (
 	<div>
-		{console.log(props)}
+	
 		<h2 className='text-white'> Related Videos </h2>
 		<button
 			className='btn btn-danger mr-5 closeBtn'

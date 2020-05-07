@@ -4,7 +4,15 @@ import './Navbar.css';
 const Nav = (props) => (
 	<ul className='nav nav-tabs'>
 		<li className='nav-item'>
-			<button className='nav-link ' onClick={() => props.discover()}>
+			<button
+				className='nav-link '
+				onClick={() => {
+					if (props.urlLocation) {
+						props.urlLocation.history.push('/');
+					}
+					props.discover();
+				}}
+			>
 				Discover
 			</button>
 		</li>
@@ -12,15 +20,22 @@ const Nav = (props) => (
 			<button
 				className='nav-link dropdown-toggle'
 				data-toggle='dropdown'
-				href='/some/valid/uri'
 				aria-haspopup='true'
 				aria-expanded='false'
 			>
 				Tv shows
 			</button>
 			<div className='dropdown-menu'>
-				<a className='dropdown-item' href='/some/valid/uri'>
-					Action
+				<a
+					className='dropdown-item'
+					href='/TvShows'
+					onClick={(e) => {
+						e.preventDefault();
+						props.urlLocation.history.push('/TvShows');
+						props.TvShows();
+					}}
+				>
+					Discover
 				</a>
 				<a className='dropdown-item' href='/some/valid/uri'>
 					Another action
@@ -38,11 +53,6 @@ const Nav = (props) => (
 			<button className='nav-link' onClick={() => props.trending()}>
 				Trending
 			</button>
-		</li>
-		<li className='nav-item'>
-			<a className='nav-link disabled' href='/some/valid/uri' aria-disabled='true'>
-				Disabled
-			</a>
 		</li>
 	</ul>
 );

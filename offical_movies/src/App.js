@@ -11,10 +11,12 @@ import NavForm from './components/navForm/navFrom';
 import config from './config';
 import MovieTrailer from './components/movieTrailers/movieTrailers';
 import YouTube from 'react-youtube';
+import TvShows from './components/TvShows/Tvshows';
 
 import $ from '../node_modules/jquery/dist/jquery.slim';
 
 const api_key = config.API_KEY;
+let urlInfo = {};
 
 const discoverUrl = 'https://api.themoviedb.org/3/discover/movie';
 const trending = 'https://api.themoviedb.org/3/trending/all/day';
@@ -24,18 +26,21 @@ class App extends Component {
 		super();
 		this.state = {
 			movies                : [],
+			TvShows               : [],
 			discover              : [],
 			discoverProp          : 'popularity.desc',
 			pageNo                : '1',
 			year                  : 2020,
 			trending              : [],
 			title                 : "What's Popular",
+			reviews               : [],
 			searchedMovies        : [],
 			displaySearchedMovies : false,
 			movieInfo             : {},
 			similarMovies         : [],
 			videos                : [],
-			movieCast             : []
+			movieCast             : [],
+			urlLocation           : ''
 		};
 	}
 	componentDidMount () {
@@ -63,11 +68,30 @@ class App extends Component {
 				this.setState({ movies: this.state.discover });
 			});
 	};
+	//discover Tv shows
+	discoverTvShows = async () => {
+		let response;
+		try {
+			response = await axios.get(`https://api.themoviedb.org/3/discover/tv`, {
+				params : {
+					api_key             : api_key,
+					sort_by             : this.state.sort,
+					first_air_date_year : this.state.year
+				}
+			});
+		} catch (err) {
+			console.log('Search Tv shows error: ', err);
+		}
+		this.setState({
+			TvShows : response.data.results
+		});
+		console.log(this.state.TvShows);
+	};
 	//search movie videos
 	searchMovieVideo = async (id) => {
 		let ID;
 		let response;
-		console.log(ID);
+
 		try {
 			ID = await id;
 			response = await axios.get(`https://api.themoviedb.org/3/movie/${ID}/videos`, {
@@ -76,11 +100,31 @@ class App extends Component {
 				}
 			});
 		} catch (err) {
-			console.log('this is the error: ', err);
+			console.log('Search movie video: ', err);
 		}
 		this.setState({
 			videos            : response.data.results,
 			showMovieTrailers : true
+		});
+	};
+	//get review
+	searchReview = async (id) => {
+		let ID;
+		let response;
+
+		try {
+			ID = await id;
+			response = await axios.get(`https://api.themoviedb.org/3/movie/${ID}/reviews`, {
+				params : {
+					api_key : api_key
+				}
+			});
+		} catch (err) {
+			console.log('Search movie video: ', err);
+		}
+
+		this.setState({
+			reviews : response.data.results
 		});
 	};
 	//search similar movies
@@ -93,7 +137,6 @@ class App extends Component {
 					api_key : api_key
 				}
 			});
-			console.log('similar: ', response.data);
 
 			this.setState({
 				similarMovies :
@@ -101,7 +144,7 @@ class App extends Component {
 					[]
 			});
 		} catch (err) {
-			console.log(err);
+			console.log('Search similar movies by id: ', err);
 		}
 	};
 	//search movie cast
@@ -119,7 +162,7 @@ class App extends Component {
 
 			//this.searchSimilarMoviesById(id);
 		} catch (err) {
-			console.log(err);
+			console.log('Search movie cast: ', err);
 		}
 
 		this.setState({ movieCast: response.data.cast });
@@ -139,7 +182,7 @@ class App extends Component {
 			this.setState({ movieInfo: response.data, showMovieList: false, showMovieInfo: true });
 			this.searchMovieCast(id);
 		} catch (err) {
-			console.log(err);
+			console.log('Search movie by id: ', err);
 		}
 	};
 	//search for trending movies
@@ -151,7 +194,6 @@ class App extends Component {
 					api_key : api_key
 				}
 			});
-			console.log('treading: ', response.data);
 
 			this.setState({
 				trending : response.data.results
@@ -161,25 +203,22 @@ class App extends Component {
 				title  : "What's Trending"
 			});
 		} catch (err) {
-			console.log(err);
+			console.log('trending: ', err);
 		}
-
-		console.log(this.state.movies);
 	};
 	//sort discover movies that needs to be displayed
 	sort = async (sort) => {
 		const Sort = await sort;
 		this.setState({ discoverProp: Sort });
 		this.discoverMovies();
-		console.log(this.state.discoverProp);
+		this.discoverTvShows();
 	};
 	//filter by year
 	filter = async (yr) => {
-		console.log(yr);
 		const year = await yr;
 		this.setState({ year: year });
 		this.discoverMovies();
-		console.log(this.state.year);
+		this.discoverTvShows();
 	};
 
 	//discovers btn function
@@ -215,7 +254,7 @@ class App extends Component {
 
 			this.setState({ searchedMovies: response.data.results });
 		} catch (err) {
-			console.log('this is the error: ', err);
+			console.log('Search Movie Error: ', err);
 		}
 
 		if (this.state.searchedMovies) {
@@ -224,6 +263,10 @@ class App extends Component {
 		if (Input.length === 0) {
 			this.setState({ displaySearchedMovies: false });
 		}
+	};
+	//get the url info that is derived from the routes
+	getUrlInfo = (props) => {
+		urlInfo = props;
 	};
 
 	//change page
@@ -249,10 +292,12 @@ class App extends Component {
 	};
 
 	render () {
-		const movieTrailers = this.state.videos.map((video) => (
-			<div className='movieTrailerItems'>
-				<YouTube videoId={`${video.key}`} opts={this.opts} />
-				<h6 className='text-white'>{video.name}</h6>
+		const movieTrailers = this.state.videos.map((video, i) => (
+			<div className='movieTrailerItems' key={i}>
+				<div>
+					<YouTube videoId={`${video.key}`} opts={this.opts} />
+					<h6 className='text-white'>{video.name}</h6>
+				</div>
 			</div>
 		));
 		const value = {
@@ -262,7 +307,10 @@ class App extends Component {
 			movies                  : this.state.movies,
 			pageNo                  : this.state.pageNo,
 			title                   : this.state.title,
-
+			discoverProp            : this.state.discoverProp,
+			year                    : this.state.year,
+			reviews                 : this.state.reviews,
+			TvShows                 : this.state.TvShows,
 			searchMovieById         : this.searchMovieById,
 			setVisibility           : this.setVisibility,
 			searchSimilarMoviesById : this.searchSimilarMoviesById,
@@ -270,7 +318,9 @@ class App extends Component {
 			movieCast               : this.state.movieCast,
 			filter                  : this.filter,
 			sort                    : this.sort,
-			changePage              : this.changePage
+			changePage              : this.changePage,
+			getUrlInfo              : this.getUrlInfo,
+			searchReview            : this.searchReview
 		};
 		return (
 			<MovieContext.Provider value={value}>
@@ -284,13 +334,25 @@ class App extends Component {
 							searchedMovies={this.state.searchedMovies}
 							displaySearchedMovies={this.state.displaySearchedMovies}
 							searchMovieById={this.searchMovieById}
+							searchSimilarMoviesById={this.searchSimilarMoviesById}
 							setVisibility={this.setVisibility}
 						/>
 					</nav>
-					<Nav discover={this.discover} trending={this.trending} />
+					<Nav
+						discover={this.discover}
+						trending={this.trending}
+						TvShows={this.discoverTvShows}
+						urlLocation={urlInfo}
+					/>
 					<div className='d-sm-flex mainContainer'>
 						<div>
-							<Route exact path='/' component={(props) => <MovieList {...props} />} />
+							<Route
+								exact
+								path='/'
+								component={(props) => {
+									return <MovieList {...props} />;
+								}}
+							/>
 						</div>
 					</div>
 					<Route exact path='/movieInfo' component={(props) => <MovieInfo {...props} />} />
@@ -298,6 +360,7 @@ class App extends Component {
 						path='/Trailers'
 						component={(props) => <MovieTrailer {...props} movieTrailers={movieTrailers} />}
 					/>
+					<Route path='/TvShows' component={(props) => <TvShows {...props} />} />
 				</div>
 			</MovieContext.Provider>
 		);

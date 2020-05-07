@@ -1,15 +1,14 @@
 import React from 'react';
-import MovieContext from '../../movieContext';
+import './Tvshows-style.css';
 import SideNav from '../sideNav/sideNav';
+import MovieCard from '../../components/movieCard/movieCard';
+import MovieContext from '../../movieContext';
 
-import MovieCard from '../movieCard/movieCard';
-import './movie-style.css';
-const MovieList = (props) => {
+const Tvshows = (props) => {
 	return (
 		<MovieContext.Consumer>
 			{(context) => (
 				<div>
-					{context.getUrlInfo(props)}
 					<div className='d-sm-flex'>
 						<div className='homePage'>
 							<div className='sideNavContainer'>
@@ -17,9 +16,8 @@ const MovieList = (props) => {
 								<SideNav />
 							</div>
 						</div>
-
 						<div className='row container movieList'>
-							{context.movies.map((movie) => {
+							{context.TvShows.map((movie) => {
 								return (
 									<MovieCard
 										movie={movie}
@@ -33,29 +31,9 @@ const MovieList = (props) => {
 							})}
 						</div>
 					</div>
-					<div className='mx-auto mt-5 d-inline-flex text-white'>
-						<button
-							className='btn btn-primary'
-							onClick={() => {
-								context.changePage('Prev');
-							}}
-						>
-							Prev
-						</button>
-						<p className='mx-2 mt-3'>{context.pageNo}</p>
-						<button
-							className='btn btn-primary'
-							onClick={() => {
-								context.changePage('Next');
-							}}
-						>
-							Next
-						</button>
-					</div>
 				</div>
 			)}
 		</MovieContext.Consumer>
 	);
 };
-
-export default MovieList;
+export default Tvshows;

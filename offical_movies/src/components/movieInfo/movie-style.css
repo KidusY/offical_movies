@@ -19,6 +19,10 @@
 	float: right;
 	height: 50px;
 }
+.movieCast {
+	overflow-y: scroll;
+	height: 50vh;
+}
 .movieCast .row {
 	margin: 0 auto;
 	color: white;
@@ -55,6 +59,14 @@
 	right: 10px;
 
 	transform: translateY(-300px);
+}
+.reviewContainer {
+	color: white;
+	text-align: left;
+	padding-top: 20px;
+}
+.review {
+	padding: 20px;
 }
 
 @media (min-width: 1024px) {
