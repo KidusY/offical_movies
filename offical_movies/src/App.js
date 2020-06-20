@@ -12,11 +12,12 @@ import config from './config';
 import MovieTrailer from './components/movieTrailers/movieTrailers';
 import YouTube from 'react-youtube';
 import TvShows from './components/TvShows/Tvshows';
-
+import FavoriteMovies from './components/favorite/favorite';
 import $ from '../node_modules/jquery/dist/jquery.slim';
 
 const api_key = config.API_KEY;
 let urlInfo = {};
+console.log(api_key);
 
 const discoverUrl = 'https://api.themoviedb.org/3/discover/movie';
 const trending = 'https://api.themoviedb.org/3/trending/all/day';
@@ -40,11 +41,13 @@ class App extends Component {
 			similarMovies         : [],
 			videos                : [],
 			movieCast             : [],
-			urlLocation           : ''
+			urlLocation           : '',
+			favoriteMovies : []
 		};
 	}
 	componentDidMount () {
 		this.discoverMovies();
+		this.getFavmovies();
 	}
 	//discover movies by popularity
 	discoverMovies = () => {
@@ -291,6 +294,12 @@ class App extends Component {
 		}
 	};
 
+	getFavmovies=()=>{
+		axios.get("http://localhost:8000/movies/favorites")
+		.then(res=>this.setState({favoriteMovies: res.data}))
+		.then(res=>console.log(this.state.favoriteMovies));
+	}
+
 	render () {
 		const movieTrailers = this.state.videos.map((video, i) => (
 			<div className='movieTrailerItems' key={i}>
@@ -311,6 +320,7 @@ class App extends Component {
 			year                    : this.state.year,
 			reviews                 : this.state.reviews,
 			TvShows                 : this.state.TvShows,
+			favoriteMovies			:this.state.favoriteMovies,
 			searchMovieById         : this.searchMovieById,
 			setVisibility           : this.setVisibility,
 			searchSimilarMoviesById : this.searchSimilarMoviesById,
@@ -343,6 +353,7 @@ class App extends Component {
 						trending={this.trending}
 						TvShows={this.discoverTvShows}
 						urlLocation={urlInfo}
+						getFavmovies = {this.getFavmovies}
 					/>
 					<div className='d-sm-flex mainContainer'>
 						<div>
@@ -361,6 +372,7 @@ class App extends Component {
 						component={(props) => <MovieTrailer {...props} movieTrailers={movieTrailers} />}
 					/>
 					<Route path='/TvShows' component={(props) => <TvShows {...props} />} />
+					<Route exact path='/favorites' component={(props) => <FavoriteMovies {...props} />} />
 				</div>
 			</MovieContext.Provider>
 		);

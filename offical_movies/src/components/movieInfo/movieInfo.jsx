@@ -6,6 +6,7 @@ import left from '../../assets/left.png';
 import right from '../../assets/right.png';
 import placeHolder from '../../assets/placeholder_for_moviePosters.png';
 import profileImg from '../../assets/placeholder-profile-male-500x500.png';
+import axios from 'axios'
 
 import Slider from 'react-slick';
 
@@ -14,7 +15,8 @@ class MovieInfo extends React.Component {
 		similarMovies : [],
 		movieCast     : [],
 		style         : [],
-		review        : []
+		review        : [],
+		
 	};
 	getMoviesInfo = (
 		similarMovies,
@@ -68,6 +70,32 @@ class MovieInfo extends React.Component {
 		}
 	};
 
+	addMovieToFav =(movieInfo)=>{
+	const{	id,
+			backdrop_path,
+			poster_path,
+			imdb_id,
+			original_language,
+			original_title,
+			overview,
+			tagline,
+			vote_average,
+			release_date
+		} = movieInfo;
+		const movieinfo ={	id,
+			backdrop_path,
+			poster_path,
+			imdb_id,
+			original_language,
+			original_title,
+			overview,
+			tagline,
+			vote_average,
+			release_date
+		}
+		axios.post("http://localhost:8000/movies/favorites",movieinfo).then(res=>console.log(res));
+	}
+
 	render () {
 		const options = {
 			dots           : true,
@@ -118,6 +146,7 @@ class MovieInfo extends React.Component {
 							context.MovieInfo,
 							context.reviews
 						)}
+						
 
 						<div className='movieInfo-card' style={this.stateContainer.style}>
 							{
@@ -156,6 +185,15 @@ class MovieInfo extends React.Component {
 										}}
 									>
 										Trailers
+									</button>
+								
+									<button
+										className='btn btn-secondary btn-lg float-left mt-3 ml-5'
+										onClick={() => {
+											this.addMovieToFav(context.MovieInfo);
+										}}
+									>
+										fav
 									</button>
 								</div>
 							</div>
