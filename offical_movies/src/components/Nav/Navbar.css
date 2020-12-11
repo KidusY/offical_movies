@@ -3,6 +3,7 @@
 	background: rgb(46, 46, 46) !important;
 	padding: 15px;
 	box-shadow: 5px 5px 5px #222222a9;
+	width: 100%;
 }
 .nav button {
 	background: rgb(26, 26, 26);
@@ -16,4 +17,55 @@
 }
 .dropdown-menu a {
 	color: white;
+}
+.dropDownList{
+	position: absolute;
+	float: right;
+	color: white;
+	right: 20px;
+	cursor: pointer;
+	list-style: none;
+	padding: 5px;
+}
+.signup-btn{
+	position: absolute;
+	float: right;
+	color: white;
+	right: 100px;
+	cursor: pointer;
+	margin-top: 5px;
+}
+.login-btn{
+	position: absolute;
+	float: right;
+	color: white;
+	right: 30px;
+	cursor: pointer;
+	margin-top: 5px;
+}
+
+.profileImg{
+	position: absolute;
+	float: right;
+	color: white;
+	right: 30px;
+	margin-top: -10px;
+	cursor: pointer;
+	border-radius: 100%;
+	width:55px;
+	height:55px;
+}
+.dropdown-Profile{
+	position: absolute;
+	float: right;
+	color: white;
+	right: 15px;
+	cursor: pointer;
+	z-index: 1000;
+	background-color: rgb(32, 32, 32);
+	width: 100px;
+	height: 100px;
+	border-radius: 10px;
+	margin-top: 50px;
+
 }

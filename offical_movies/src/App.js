@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 import MovieContext from './movieContext';
 import Nav from './components/Nav/Navbar';
 import axios from 'axios';
@@ -13,8 +13,10 @@ import MovieTrailer from './components/movieTrailers/movieTrailers';
 import YouTube from 'react-youtube';
 import TvShows from './components/TvShows/Tvshows';
 import FavoriteMovies from './components/favorite/favorite';
+import Login from './routes/login';
 import $ from '../node_modules/jquery/dist/jquery.slim';
 
+import { auth, createUserProfileDocument } from './firebase.util';
 const api_key = config.API_KEY;
 let urlInfo = {};
 console.log(api_key);
@@ -23,39 +25,60 @@ const discoverUrl = 'https://api.themoviedb.org/3/discover/movie';
 const trending = 'https://api.themoviedb.org/3/trending/all/day';
 
 class App extends Component {
-	constructor () {
+	constructor() {
 		super();
 		this.state = {
-			movies                : [],
-			TvShows               : [],
-			discover              : [],
-			discoverProp          : 'popularity.desc',
-			pageNo                : '1',
-			year                  : 2020,
-			trending              : [],
-			title                 : "What's Popular",
-			reviews               : [],
-			searchedMovies        : [],
-			displaySearchedMovies : false,
-			movieInfo             : {},
-			similarMovies         : [],
-			videos                : [],
-			movieCast             : [],
-			urlLocation           : '',
-			favoriteMovies : []
+			movies: [],
+			TvShows: [],
+			discover: [],
+			discoverProp: 'popularity.desc',
+			pageNo: '1',
+			year: 2020,
+			trending: [],
+			title: "What's Popular",
+			reviews: [],
+			searchedMovies: [],
+			displaySearchedMovies: false,
+			movieInfo: {},
+			similarMovies: [],
+			videos: [],
+			movieCast: [],
+			urlLocation: '',
+			favoriteMovies: [],
+			currentUser: {}
 		};
 	}
-	componentDidMount () {
+	unsubscribeFromAuth = null;
+	componentDidMount() {
+		this.unsubscribeFromAuth = auth.onAuthStateChanged(async (userAuth) => {
+			if (userAuth) {
+				const userRef = await createUserProfileDocument(userAuth);
+
+				userRef.onSnapshot((snapshot) => {
+					this.setState({
+						currentUser: {
+							id: snapshot.id,
+							...snapshot.data()
+						}
+					});
+				});
+			} else {
+				this.setState({ currentUser: null });
+			}
+		});
 		this.discoverMovies();
-		this.getFavmovies();
+		//	this.getFavmovies();
+	}
+	componentWillUnmount() {
+		this.unsubscribeFromAuth();
 	}
 	//discover movies by popularity
 	discoverMovies = () => {
 		const params = {
-			api_key              : api_key,
-			sort_by              : this.state.discoverProp,
-			primary_release_year : this.state.year,
-			page                 : this.state.pageNo
+			api_key: api_key,
+			sort_by: this.state.discoverProp,
+			primary_release_year: this.state.year,
+			page: this.state.pageNo
 		};
 		const param = $.param(params);
 		const newUrl = `${discoverUrl}?${param}`;
@@ -76,17 +99,17 @@ class App extends Component {
 		let response;
 		try {
 			response = await axios.get(`https://api.themoviedb.org/3/discover/tv`, {
-				params : {
-					api_key             : api_key,
-					sort_by             : this.state.sort,
-					first_air_date_year : this.state.year
+				params: {
+					api_key: api_key,
+					sort_by: this.state.sort,
+					first_air_date_year: this.state.year
 				}
 			});
 		} catch (err) {
 			console.log('Search Tv shows error: ', err);
 		}
 		this.setState({
-			TvShows : response.data.results
+			TvShows: response.data.results
 		});
 		console.log(this.state.TvShows);
 	};
@@ -98,16 +121,16 @@ class App extends Component {
 		try {
 			ID = await id;
 			response = await axios.get(`https://api.themoviedb.org/3/movie/${ID}/videos`, {
-				params : {
-					api_key : api_key
+				params: {
+					api_key: api_key
 				}
 			});
 		} catch (err) {
 			console.log('Search movie video: ', err);
 		}
 		this.setState({
-			videos            : response.data.results,
-			showMovieTrailers : true
+			videos: response.data.results,
+			showMovieTrailers: true
 		});
 	};
 	//get review
@@ -118,8 +141,8 @@ class App extends Component {
 		try {
 			ID = await id;
 			response = await axios.get(`https://api.themoviedb.org/3/movie/${ID}/reviews`, {
-				params : {
-					api_key : api_key
+				params: {
+					api_key: api_key
 				}
 			});
 		} catch (err) {
@@ -127,7 +150,7 @@ class App extends Component {
 		}
 
 		this.setState({
-			reviews : response.data.results
+			reviews: response.data.results
 		});
 	};
 	//search similar movies
@@ -136,15 +159,13 @@ class App extends Component {
 		let response;
 		try {
 			response = await axios.get(`https://api.themoviedb.org/3/movie/${Id}/similar`, {
-				params : {
-					api_key : api_key
+				params: {
+					api_key: api_key
 				}
 			});
 
 			this.setState({
-				similarMovies :
-					response ? response.data.results :
-					[]
+				similarMovies: response ? response.data.results : []
 			});
 		} catch (err) {
 			console.log('Search similar movies by id: ', err);
@@ -158,8 +179,8 @@ class App extends Component {
 		try {
 			Id = await id;
 			response = await axios.get(`https://api.themoviedb.org/3/movie/${Id}/credits`, {
-				params : {
-					api_key : api_key
+				params: {
+					api_key: api_key
 				}
 			});
 
@@ -178,8 +199,8 @@ class App extends Component {
 		try {
 			Id = await id;
 			response = await axios.get(`https://api.themoviedb.org/3/movie/${Id}`, {
-				params : {
-					api_key : api_key
+				params: {
+					api_key: api_key
 				}
 			});
 			this.setState({ movieInfo: response.data, showMovieList: false, showMovieInfo: true });
@@ -193,17 +214,17 @@ class App extends Component {
 		let response;
 		try {
 			response = await axios.get(`${trending}`, {
-				params : {
-					api_key : api_key
+				params: {
+					api_key: api_key
 				}
 			});
 
 			this.setState({
-				trending : response.data.results
+				trending: response.data.results
 			});
 			this.setState({
-				movies : this.state.trending,
-				title  : "What's Trending"
+				movies: this.state.trending,
+				title: "What's Trending"
 			});
 		} catch (err) {
 			console.log('trending: ', err);
@@ -232,11 +253,9 @@ class App extends Component {
 	setVisibility = (state = '') => {
 		if (state === 'showMovieTrailers') {
 			this.setState({ showMovieTrailers: false, showMovieInfo: true });
-		}
-		else if (state === 'displaySearchedMovies') {
+		} else if (state === 'displaySearchedMovies') {
 			this.setState({ displaySearchedMovies: false });
-		}
-		else {
+		} else {
 			this.setState({ showMovieList: true, showMovieInfo: false });
 		}
 	};
@@ -249,9 +268,9 @@ class App extends Component {
 		try {
 			Input = await input;
 			response = await axios.get(`https://api.themoviedb.org/3/search/movie`, {
-				params : {
-					api_key : api_key,
-					query   : Input
+				params: {
+					api_key: api_key,
+					query: Input
 				}
 			});
 
@@ -279,8 +298,7 @@ class App extends Component {
 
 		if (Page === 'Prev' && this.state.pageNo > 1) {
 			PageNo--;
-		}
-		else {
+		} else {
 			PageNo++;
 		}
 
@@ -288,55 +306,57 @@ class App extends Component {
 		this.discoverMovies();
 	};
 	opts = {
-		allowfullscreen : true,
-		playerVars      : {
-			playsinline : 0
+		allowfullscreen: true,
+		playerVars: {
+			playsinline: 0
 		}
 	};
 
-	getFavmovies=()=>{
-		axios.get("http://localhost:8000/movies/favorites")
-		.then(res=>this.setState({favoriteMovies: res.data}))
-		.then(res=>console.log(this.state.favoriteMovies));
-	}
+	getFavmovies = () => {
+		axios
+			.get('http://localhost:8000/movies/favorites')
+			.then((res) => this.setState({ favoriteMovies: res.data }))
+			.then((res) => console.log(this.state.favoriteMovies));
+	};
 
-	render () {
+	render() {
 		const movieTrailers = this.state.videos.map((video, i) => (
-			<div className='movieTrailerItems' key={i}>
+			<div className="movieTrailerItems" key={i}>
 				<div>
 					<YouTube videoId={`${video.key}`} opts={this.opts} />
-					<h6 className='text-white'>{video.name}</h6>
+					<h6 className="text-white">{video.name}</h6>
 				</div>
 			</div>
 		));
 		const value = {
-			MovieInfo               : this.state.movieInfo,
-			similarMovies           : this.state.similarMovies,
-			videos                  : this.state.videos,
-			movies                  : this.state.movies,
-			pageNo                  : this.state.pageNo,
-			title                   : this.state.title,
-			discoverProp            : this.state.discoverProp,
-			year                    : this.state.year,
-			reviews                 : this.state.reviews,
-			TvShows                 : this.state.TvShows,
-			favoriteMovies			:this.state.favoriteMovies,
-			searchMovieById         : this.searchMovieById,
-			setVisibility           : this.setVisibility,
-			searchSimilarMoviesById : this.searchSimilarMoviesById,
-			searchMovieVideo        : this.searchMovieVideo,
-			movieCast               : this.state.movieCast,
-			filter                  : this.filter,
-			sort                    : this.sort,
-			changePage              : this.changePage,
-			getUrlInfo              : this.getUrlInfo,
-			searchReview            : this.searchReview
+			MovieInfo: this.state.movieInfo,
+			similarMovies: this.state.similarMovies,
+			videos: this.state.videos,
+			movies: this.state.movies,
+			pageNo: this.state.pageNo,
+			title: this.state.title,
+			discoverProp: this.state.discoverProp,
+			year: this.state.year,
+			reviews: this.state.reviews,
+			TvShows: this.state.TvShows,
+			favoriteMovies: this.state.favoriteMovies,
+			searchMovieById: this.searchMovieById,
+			setVisibility: this.setVisibility,
+			searchSimilarMoviesById: this.searchSimilarMoviesById,
+			searchMovieVideo: this.searchMovieVideo,
+			movieCast: this.state.movieCast,
+			filter: this.filter,
+			sort: this.sort,
+			changePage: this.changePage,
+			getUrlInfo: this.getUrlInfo,
+			searchReview: this.searchReview,
+			currentUser: this.state.currentUser
 		};
 		return (
 			<MovieContext.Provider value={value}>
-				<div className='App'>
-					<nav className='navbar navbar-light '>
-						<a className='navbar-brand' href='/'>
+				<div className="App">
+					<nav className="navbar navbar-light ">
+						<a className="navbar-brand" href="/">
 							<img src={logo} alt={logo} />
 						</a>
 						<NavForm
@@ -353,26 +373,32 @@ class App extends Component {
 						trending={this.trending}
 						TvShows={this.discoverTvShows}
 						urlLocation={urlInfo}
-						getFavmovies = {this.getFavmovies}
+						getFavmovies={this.getFavmovies}
+						currentUser={this.state.currentUser}
 					/>
-					<div className='d-sm-flex mainContainer'>
+					<div className="d-sm-flex mainContainer">
 						<div>
 							<Route
 								exact
-								path='/'
+								path="/"
 								component={(props) => {
 									return <MovieList {...props} />;
 								}}
 							/>
 						</div>
 					</div>
-					<Route exact path='/movieInfo' component={(props) => <MovieInfo {...props} />} />
+					<Route exact path="/movieInfo" component={(props) => <MovieInfo {...props} />} />
 					<Route
-						path='/Trailers'
+						path="/Trailers"
 						component={(props) => <MovieTrailer {...props} movieTrailers={movieTrailers} />}
 					/>
-					<Route path='/TvShows' component={(props) => <TvShows {...props} />} />
-					<Route exact path='/favorites' component={(props) => <FavoriteMovies {...props} />} />
+					<Route path="/TvShows" component={(props) => <TvShows {...props} />} />
+					{/* <Route exact path="/favorites" component={(props) => <FavoriteMovies {...props} />} /> */}
+					<Route
+						exact
+						path="/login"
+						render={() => (this.state.currentUser ? <Redirect to="/" />  : <Login />)}
+					/>
 				</div>
 			</MovieContext.Provider>
 		);
