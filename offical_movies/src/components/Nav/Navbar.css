@@ -2,9 +2,15 @@
 	border: none;
 	background: rgb(46, 46, 46) !important;
 	padding: 15px;
+	min-height: 60px;
 	box-shadow: 5px 5px 5px #222222a9;
 	width: 100%;
-	margin: 0 auto;
+	margin: 0 auto;	
+	
+}
+.nav h5{
+	padding: 0;
+	line-height: 0.9;
 	
 }
 .nav button {
