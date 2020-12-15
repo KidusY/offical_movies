@@ -23,9 +23,12 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
 	const snapShot = await userRef.get();
     //If there is nothing, if exists is false create/save the user info
 	if (!snapShot.exists) {
-		const { displayName, email, photoURL,phoneNumber } = userAuth;
+		let { displayName, email, photoURL,phoneNumber } = userAuth;
+		if(!displayName && additionalData?.displayName){
+			displayName = additionalData.displayName
+		}
 		const createdAt = new Date();
-
+		console.log(userAuth);
 		try {
 			await userRef.set({
 				displayName,

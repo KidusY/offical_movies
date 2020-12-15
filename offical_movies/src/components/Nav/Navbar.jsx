@@ -1,4 +1,5 @@
 import React,{useState} from 'react';
+import {withRouter} from 'react-router-dom'
 import { auth } from '../../firebase.util';
 import dummyProfilePic from '../../assets/depositphotos_134255626-stock-illustration-avatar-male-profile-gray-person.jpg'
 import './Navbar.css';
@@ -11,8 +12,8 @@ if(!currentUserInfo?.photoURL){
 	currentUserInfo.photoURL = dummyProfilePic
 }
 	return(
-		<ul className="nav nav-tabs">
-		{console.log(props.currentUser)}
+	<div>
+			<ul className="nav nav-tabs">		
 			<li className="nav-item">
 				<button
 					className="nav-link "
@@ -54,9 +55,10 @@ if(!currentUserInfo?.photoURL){
 					Trending
 				</button>
 			</li>
-			<li className="nav-item">
+			{/* <li className="nav-item">
 				<button
 					className="nav-link"
+					disabled={true}
 					onClick={() => {
 						props.urlLocation.history.push('/favorites');
 						props.getFavmovies();
@@ -64,9 +66,9 @@ if(!currentUserInfo?.photoURL){
 				>
 					Favorites
 				</button>
-			</li>
+			</li> */}
 			{props.currentUser ? (
-				<div>
+				<div className="profileImgContainer">
 					<img className="profileImg" src={currentUserInfo.photoURL} alt="profilePic" onClick={
 						()=> setShowProfileDropDropDown(!showProfileDropDown)
 					}/>
@@ -115,8 +117,51 @@ if(!currentUserInfo?.photoURL){
 				</div>
 			)}
 		</ul>
+	
+	
+	<ul className="mobileNav">
+	<li className="nav-item">
+	
+				<button
+					className="nav-link "
+					onClick={() => {
+						if (props.urlLocation) {
+							props.urlLocation.history.push('/');
+						}
+						props.discover();
+					}}
+				>
+					Discover
+				</button>
+			</li>
+
+
+			<li className="nav-item ">
+				<button
+					className="nav-link"								
+					onClick={(e) => {
+							e.preventDefault();
+							if (props.urlLocation) {
+								props.urlLocation.history.push('/TvShows');
+						}
+							
+							props.TvShows();
+						}}
+				>
+					Tv shows
+				</button>
+				
+			</li>
+
+			<li className="nav-item">
+				<button className="nav-link" onClick={() => props.trending()}>
+					Trending
+				</button>
+			</li>
+	</ul>
+	</div>
 	);
 } 
 
 
-export default Nav;
+export default withRouter(Nav);

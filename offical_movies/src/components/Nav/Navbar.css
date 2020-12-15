@@ -4,6 +4,8 @@
 	padding: 15px;
 	box-shadow: 5px 5px 5px #222222a9;
 	width: 100%;
+	margin: 0 auto;
+	
 }
 .nav button {
 	background: rgb(26, 26, 26);
@@ -18,7 +20,7 @@
 .dropdown-menu a {
 	color: white;
 }
-.dropDownList{
+.dropDownList {
 	position: absolute;
 	float: right;
 	color: white;
@@ -27,7 +29,7 @@
 	list-style: none;
 	padding: 5px;
 }
-.signup-btn{
+.signup-btn {
 	position: absolute;
 	float: right;
 	color: white;
@@ -35,7 +37,7 @@
 	cursor: pointer;
 	margin-top: 5px;
 }
-.login-btn{
+.login-btn {
 	position: absolute;
 	float: right;
 	color: white;
@@ -44,7 +46,7 @@
 	margin-top: 5px;
 }
 
-.profileImg{
+.profileImg {
 	position: absolute;
 	float: right;
 	color: white;
@@ -52,10 +54,10 @@
 	margin-top: -10px;
 	cursor: pointer;
 	border-radius: 100%;
-	width:55px;
-	height:55px;
+	width: 55px;
+	height: 55px;
 }
-.dropdown-Profile{
+.dropdown-Profile {
 	position: absolute;
 	float: right;
 	color: white;
@@ -67,5 +69,72 @@
 	height: 100px;
 	border-radius: 10px;
 	margin-top: 50px;
-
+}
+.mobileNav {
+	display: none;
+}
+@media (max-width: 768px) {
+	.nav {
+		padding: 15px 0;
+	}
+	.nav-item {
+		display: none;
+	}
+	.profileImgContainer {
+		display: block;
+		margin: 0 auto;
+		
+		
+	}
+	.profileImg {
+		display: block;
+		position: unset;
+		margin: 0 auto;
+	}
+	.dropdown-Profile {
+		position: absolute;
+		left: 50%;
+		right: 50%;
+		transform: translateX(-50px);
+		z-index: 1000;
+		float: none;
+	}
+	.mobileNav {
+		display: flex;
+		justify-content: space-evenly;
+		width: 100%;
+		height: 130px;
+		background-color: #2b2b2b;
+		position: fixed;
+		bottom: 0;
+		z-index: 1000;
+		height: 100px;
+		margin: 0;
+		padding: 10px;
+	}
+	.mobileNav li {
+		display: block;
+		color: white;
+		height: 100%;
+		margin: 0;
+	}
+	.mobileNav li button {
+		width: 150px;
+		height: 100%;
+		margin: 0;
+		color: white;
+		font-weight: bold;
+		border: none;
+		border-radius: 5px;
+		background: linear-gradient(145deg, #2e2e2e, #272727);
+		box-shadow: 15px 15px 30px #252525, -15px -15px 30px #313131;
+		transition: ease-in 0.5s;
+		outline:none;
+	}
+	.mobileNav li button:hover {
+		transition: ease-in-out 0.5s;
+		border-radius: 5px;
+		background: linear-gradient(145deg, #272727, #2e2e2e);
+		box-shadow: 15px 15px 30px #252525, -15px -15px 30px #313131;
+	}
 }

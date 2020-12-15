@@ -12,6 +12,7 @@ import config from './config';
 import MovieTrailer from './components/movieTrailers/movieTrailers';
 import YouTube from 'react-youtube';
 import TvShows from './components/TvShows/Tvshows';
+import SignUP from './routes/signup';
 import FavoriteMovies from './components/favorite/favorite';
 import Login from './routes/login';
 import $ from '../node_modules/jquery/dist/jquery.slim';
@@ -398,6 +399,11 @@ class App extends Component {
 						exact
 						path="/login"
 						render={() => (this.state.currentUser ? <Redirect to="/" />  : <Login />)}
+					/>
+					<Route
+						exact
+						path="/signup"
+						render={() => (this.state.currentUser ? <Redirect to="/" />  : <SignUP/>)}
 					/>
 				</div>
 			</MovieContext.Provider>
